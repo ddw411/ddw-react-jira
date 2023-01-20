@@ -1,4 +1,5 @@
 import React from "react"
+import { Form, Select,Input } from "antd";
 
 export interface User {
     id: string;
@@ -21,22 +22,26 @@ interface SearchPanelProps {
 export const SearchPanel = (props: SearchPanelProps) => {
     const {param, setParam, users} = props
     return (
-        <form action="">
-            <input type="text" value={param.name} onChange={e => setParam({
-                ...param,
-                name: e.target.value
-            })}/>
-            <select value={param.personId} onChange={e => setParam({
-                ...param,
-                personId: e.target.value
-            })}>
-                <option value={' '}>负责人</option>
-                {
-                    // 函数体内只有一句，则可省略{}，自带return
-                    users.map((user) => <option value={user.id} key={user.id}>{user.name}</option>)
-                }
-            </select>
-        </form>
+        <Form style={{marginBottom: '2rem'}}layout={"inline"}>
+            <Form.Item>
+                <Input placeholder={'项目名'} type="text" value={param.name} onChange={e => setParam({
+                    ...param,
+                    name: e.target.value
+                })}/>
+            </Form.Item>
+            <Form.Item>
+                <Select value={param.personId} onChange={value => setParam({
+                    ...param,
+                    personId: value
+                })}>
+                    <Select.Option value={' '}>负责人</Select.Option>
+                    {
+                        // 函数体内只有一句，则可省略{}，自带return
+                        users.map((user) => <Select.Option value={user.id} key={user.id}>{user.name}</Select.Option>)
+                    }
+                </Select>
+            </Form.Item>
+        </Form>
     )
 }
 

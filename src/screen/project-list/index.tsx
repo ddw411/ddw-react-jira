@@ -3,6 +3,7 @@ import { cleanObject, useDebounce, useMount } from "../../utils"
 import List from "./list"
 import SearchPanel from "./search-panel"
 import { useHttp } from "../../utils/http"
+import styled from "@emotion/styled"
 
 interface Param {
     name: string;
@@ -28,7 +29,8 @@ export const ProjectList = () => {
     })
 
     return (
-        <div>
+        <Container>
+            <h1>项目列表</h1>
             <SearchPanel 
                 param={param}
                 setParam={setParam} 
@@ -38,8 +40,12 @@ export const ProjectList = () => {
                 list={list}
                 users={users}
             />
-        </div>
+        </Container>
     )
 }
 
 export default ProjectList
+
+const Container = styled.div`
+    padding: 3.2rem;
+`
