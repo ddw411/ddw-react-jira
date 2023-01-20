@@ -23,15 +23,16 @@ export const useMount = (callback: () => void) => {
     }, [])
 }
 
+// 后面用泛型来规范类型
 export const useDebounce = <V>(value: V, delay?: number) => {
-    const [inputValue, setInputValue] = useState(value)
+    const [debouncedValue, setDebouncedValue] = useState(value);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setInputValue(value)
-        }, delay)
-        return clearTimeout(timer)
-    },[inputValue, delay])
+        // 每次在value变化以后，设置一个定时器
+        const timeout = setTimeout(() => setDebouncedValue(value), delay);
+        // 每次在上一个useEffect处理完以后再运行
+        return () => clearTimeout(timeout);
+    }, [value, delay]);
 
-    return inputValue
-}
+    return debouncedValue;
+};

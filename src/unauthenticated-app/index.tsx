@@ -1,5 +1,5 @@
 import React,{ useState } from "react"
-import {Card, Divider,Button} from 'antd'
+import {Card, Divider,Button, Typography} from 'antd'
 import Login from "./login"
 import Register from "./register"
 import styled from '@emotion/styled'
@@ -8,7 +8,9 @@ import left from '../assets/left.svg'
 import right from '../assets/right.svg'
 
 export const UnauthenticatedApp = () => {
+    // setXXX是异步操作
     const [isLogin, setIsLogin] = useState(true)
+    const [error, setError] = useState<Error | null>(null)
 
     return (
         <Container>
@@ -16,8 +18,9 @@ export const UnauthenticatedApp = () => {
             <Background/>
             <ShadowCard>
                 <Title>{ isLogin ? "请登录" : "请注册"}</Title>
+                {error ? <Typography.Text type={'danger'}>{error.message}</Typography.Text> : null}
                 {
-                    isLogin ? <Login/> : <Register/>
+                    isLogin ? <Login onError={setError}/> : <Register onError={setError}/>
                 }
                 <Divider/>
                 <Button type={"link"} onClick={() => setIsLogin(!isLogin)}>{!isLogin ? "已经有账号了？直接登录" : "没有账号？注册新账号"}</Button>

@@ -1,44 +1,33 @@
-import React, { useEffect, useState } from "react"
-import { cleanObject, useDebounce, useMount } from "../../utils"
-import List from "./list"
+import React, { useState } from "react"
+import { useDebounce } from "../../utils"
 import SearchPanel from "./search-panel"
-import { useHttp } from "../../utils/http"
 import styled from "@emotion/styled"
+import { useProject } from "../../utils/project"
+import { useUsers } from "../../utils/user"
+import List from "./list"
 
-interface Param {
-    name: string;
-    personId: string
-}
 
 export const ProjectList = () => {
-    const [param, setParam] = useState<Param>({
+    const [param, setParam] = useState({
         name:'',
         personId:''
     })
     const debouncedParam = useDebounce(param, 2000)
-    const [list, setList] = useState([])
-    const [users, setUsers] = useState([])
-    const client = useHttp()
-
-    useEffect(() => {
-        client('projects',{data: cleanObject(debouncedParam)}).then(setList)
-    },[debouncedParam])
-
-    useMount(() => {
-        client('users').then(setUsers)
-    })
+    const { isLoading, data: list} = useProject(debouncedParam)
+    const {data: users} = useUsers()
 
     return (
         <Container>
             <h1>项目列表</h1>
             <SearchPanel 
+                users={users || []}
                 param={param}
                 setParam={setParam} 
-                users={users}
             />
             <List 
-                list={list}
-                users={users}
+                loading={isLoading}
+                dataSource={list || []}
+                users={users || []}
             />
         </Container>
     )

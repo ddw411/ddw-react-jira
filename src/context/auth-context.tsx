@@ -1,8 +1,10 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import * as auth from '../auth-provider'
+import { FullPageErrorFallback, FullPageLoading } from "../components/lib";
 import { User } from "../screen/project-list/search-panel";
 import { useMount } from "../utils";
 import { http } from "../utils/http";
+import { useAsync } from "../utils/useAsync";
 
 interface AuthForm {
     username: string;
@@ -33,7 +35,8 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     // 管理了user信息
     // 默认值是null，页面刷新后丢失user信息
     // 例如，登录后发送get请求，获取数据后重新刷新渲染页面导致user丢失，调用logout
-    const [user, setUser] = useState<User|null>(null)
+    // const [user, setUser] = useState<User|null>(null)
+    const {data:user, error, isLoading,isIdle, isError, run, setData: setUser} = useAsync<User|null>()
 
     const login = (form: AuthForm) => auth.login(form).then(user => setUser(user))
     const register = (form: AuthForm) => auth.register(form).then(user => setUser(user))
@@ -41,8 +44,16 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
 
     // 页面挂载初始化user，进行持久化
     useMount(() => {
-        bootstrapUser().then(user => setUser(user))
+        run(bootstrapUser())
     })
+
+    if(isIdle || isLoading) {
+        return <FullPageLoading/>
+    }
+
+    if(isError) {
+        return <FullPageErrorFallback error={error}/>
+    }
 
     return <AuthContext.Provider children={children} value={{user, login, logout, register}}/>
 }
