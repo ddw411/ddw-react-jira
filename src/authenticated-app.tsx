@@ -4,37 +4,57 @@ import ProjectList from "./screen/project-list";
 import styled from '@emotion/styled'
 import { Row } from "./components/lib";
 import {ReactComponent as SoftwareLogo} from './assets/software-logo.svg'
-import {Dropdown,Menu} from 'antd'
+import {Dropdown, Menu, Button} from 'antd'
+import {Navigate, Route, Routes} from 'react-router'
+import { BrowserRouter as Router } from "react-router-dom";
+import { ProjectScreen } from "./screen/project";
+import { resetRoute } from "./utils";
 
 export const AuthticatedApp = () => {
-    const {logout, user} = useAuth()
+    
 
     return (
         <Container>
-            <Header>
-                <HeaderLeft gap={true}>
-                    <SoftwareLogo width={'18rem'}/>
-                    <h2>项目</h2>
-                    <h2>用户</h2>
-                </HeaderLeft>
-                <HeaderRight>
-                    {/* @ts-ignore */}
-                    <Dropdown overlay={<Menu>
-                        <Menu.Item key={'logout'}>
-                            <a onClick={logout}>logout</a>
-                        </Menu.Item>
-                    </Menu>}>
-                        <a onClick={e => e.preventDefault()}>
-                            Hi, {user?.name}
-                        </a>
-                    </Dropdown>
-                </HeaderRight>
-            </Header>
+            <PageHeader/>
             <Main>
-                <ProjectList/>
+                <Router>
+                    <Routes>
+                        <Route path={'/projects'} element={<ProjectList/>} />
+                        <Route path={'/projects/:projectId'} element={<ProjectScreen/>} />
+                        <Navigate to={'/projects'}/>
+                    </Routes>
+                </Router>
             </Main>
         </Container>
     )
+}
+
+const PageHeader = () => {
+    const {logout, user} = useAuth()
+
+    return (
+        <Header>
+            <HeaderLeft gap={true}>
+                <Button type={'link'} onClick={resetRoute}>
+                    <SoftwareLogo width={'18rem'}/>
+                </Button>
+                <h2>项目</h2>
+                <h2>用户</h2>
+            </HeaderLeft>
+            <HeaderRight>
+                {/* @ts-ignore */}
+                <Dropdown overlay={<Menu>
+                    <Menu.Item key={'logout'}>
+                        <Button type={"link"} onClick={logout}>logout</Button>
+                    </Menu.Item>
+                </Menu>}>
+                    <Button type={"link"} onClick={e => e.preventDefault()}>
+                        Hi, {user?.name}
+                    </Button>
+                </Dropdown>
+            </HeaderRight>
+        </Header>
+    ) 
 }
 
 // temporal dead zone(暂时性死区)

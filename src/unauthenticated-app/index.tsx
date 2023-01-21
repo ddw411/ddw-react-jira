@@ -6,11 +6,14 @@ import styled from '@emotion/styled'
 import logo from '../assets/logo.svg'
 import left from '../assets/left.svg'
 import right from '../assets/right.svg'
+import { useDocumentTitle } from "../utils"
 
 export const UnauthenticatedApp = () => {
     // setXXX是异步操作
     const [isLogin, setIsLogin] = useState(true)
     const [error, setError] = useState<Error | null>(null)
+
+    useDocumentTitle("登录注册")
 
     return (
         <Container>
