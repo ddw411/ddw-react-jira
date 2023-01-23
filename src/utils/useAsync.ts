@@ -22,6 +22,9 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
         ...defaultInitialState,
         ...initialState
     })
+    // retry的目的是重新发一次请求，而不是setstate
+    // 可用useRef替代此方法
+    const [retry, setRetry] = useState(() => () => {})
 
     // 成功的回调
     const setData = (data: D) => setState({
@@ -38,10 +41,15 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
     })
 
     // 处理异步，并处理promise的结果
-    const run = (promise: Promise<D>) => {
+    const run = (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
         if(!promise) {
             throw new Error('请传入promise')
         }
+        setRetry(() => () => {
+            if(runConfig?.retry) {
+                run(runConfig?.retry(), runConfig)
+            }
+        })
         setState({...state, stat:'loading'})
         return promise.then(data => {
             setData(data)
@@ -61,6 +69,7 @@ export const useAsync = <D>(initialState?: State<D>, initialConfig?: typeof defa
         isError: state.stat === 'error',
         isSuccess: state.stat === 'success',
         run,
+        retry,
         setData,
         setError,
         ...state

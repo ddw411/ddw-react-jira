@@ -5,24 +5,23 @@ import styled from "@emotion/styled"
 import { useProject } from "../../utils/project"
 import { useUsers } from "../../utils/user"
 import List from "./list"
-import { useUrlQueryParam } from "../../utils/url"
+import { useProjectsSearchParams } from "./util"
 
 
 export const ProjectList = () => {
     
-    const [param, setParam] = useUrlQueryParam(['name', 'personId'])
-    const debouncedParam = useDebounce(param, 2000)
-    const { isLoading, data: list} = useProject(debouncedParam)
+    const [param, setParam] = useProjectsSearchParams()
+    //@ts-ignore
+    const { isLoading, data: list, retry} = useProject(useDebounce(param, 200))
     const {data: users} = useUsers()
 
     useDocumentTitle("项目列表", false)
-
+ 
     return (
         <Container>
             <h1>项目列表</h1>
             <SearchPanel 
                 users={users || []}
-                // @ts-ignore
                 param={param}
                 setParam={setParam} 
             />
@@ -30,6 +29,7 @@ export const ProjectList = () => {
                 loading={isLoading}
                 dataSource={list || []}
                 users={users || []}
+                refresh={retry}
             />
         </Container>
     )
