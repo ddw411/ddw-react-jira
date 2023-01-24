@@ -9,6 +9,7 @@ import {Navigate, Route, Routes} from 'react-router'
 import { BrowserRouter as Router } from "react-router-dom";
 import { ProjectScreen } from "./screen/project";
 import { resetRoute } from "./utils";
+import { ProjectModal } from "./screen/project-list/project-modal";
 
 export const AuthticatedApp = () => {
     
@@ -16,15 +17,17 @@ export const AuthticatedApp = () => {
     return (
         <Container>
             <PageHeader/>
-            <Main>
-                <Router>
+            <Router>
+                <Main>
                     <Routes>
                         <Route path={'/projects'} element={<ProjectList/>} />
-                        <Route path={'/projects/:projectId'} element={<ProjectScreen/>} />
+                        <Route path={'/projects/:projectId/*'} element={<ProjectScreen/>} />
                         <Navigate to={'/projects'}/>
                     </Routes>
-                </Router>
-            </Main>
+                </Main>
+                {/* 有url参数控制，并展示 */}
+                <ProjectModal/>
+            </Router>
         </Container>
     )
 }

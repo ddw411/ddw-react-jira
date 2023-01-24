@@ -1,54 +1,60 @@
-import { useEffect } from "react"
-import { cleanObject } from "."
 import { Project } from "../screen/project-list/list"
 import { useHttp } from "./http"
-import { useAsync } from "./useAsync"
+import { QueryKey, useMutation, useQuery, useQueryClient} from "react-query"
+import { useAddConfig, useDeleteConfig, useEditConfig } from "./use-optimistic-options"
 
 // 自定义hook返回封装属性与方法，hook只能在顶层调用
 // 请求项目列表数据
-export const useProject = (param?: Partial<Project>) => {
+export const useProjects = (param?: Partial<Project>) => {
     const client = useHttp()
-    const {run,...result} = useAsync<Project[]>()
-    const fetchProjects = () => client('projects',{data: cleanObject(param || {})})
-
-    useEffect(() => {
-        run(fetchProjects(), {
-            retry: fetchProjects
-        })
-    },[param])
-
-    return result
+    
+    // ['projects',param] --> [状态标识符，监听依赖]
+    return useQuery<Project[]>(['projects',param], () => client('projects', {data: param}))
 }
 
 // 修改编辑project方法
-export const useEditProject = () => {
-    const {run, ...asyncResult} = useAsync()
+export const useEditProject = (queryKey: QueryKey) => {
     const client = useHttp()
-    const mutate = (params: Partial<Project>) => {
-        return run(client(`projects/${params.id}`, {
-            data: params,
+    
+    
+    // useMutation会暴露mutate和mutateAsync方法
+    return useMutation(
+        (params: Partial<Project>) => client(`projects/${params.id}`, {
             method: 'PATCH',
-        }))
-    }
-
-    return {
-        mutate,
-        ...asyncResult,
-    }
+            data: params
+        }),
+        useEditConfig(queryKey)
+    )
 }
 
-export const useAddProject = () => {
-    const {run, ...asyncResult} = useAsync()
+export const useAddProject = (queryKey: QueryKey) => {
     const client = useHttp()
-    const mutate = (params: Partial<Project>) => {
-        return run(client(`projects/${params.id}`, {
+    
+    return useMutation(
+        (params: Partial<Project>) => client(`projects`, {
             data: params,
-            method: 'POST'
-        }))
-    }
+            method: "POST"
+        }),
+        useAddConfig(queryKey)
+    )
+}
 
-    return {
-        mutate,
-        ...asyncResult,
-    }
+export const useDeleteProject = (queryKey: QueryKey) => {
+    const client = useHttp()
+    
+    return useMutation(
+        ({id} : {id: number}) => client(`projects/${id}`, {
+            method: "DELETE"
+        }),
+        useDeleteConfig(queryKey)
+    )
+}
+
+export const useProjectDetail = (id?:number) => {
+    const client = useHttp()
+
+    return useQuery<Project>(['project', {id}], () => client(`projects/${id}`),
+    {
+        enabled: !!id
+    })
 }
