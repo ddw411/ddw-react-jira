@@ -20,6 +20,7 @@ export const http = async (endpoint: string, {data, token, headers, ...customCon
         ...customConfig
     }
 
+    // 参数添加
     if(config.method.toUpperCase() === "GET") {
         endpoint += `?${qs.stringify(data)}`
     } else {

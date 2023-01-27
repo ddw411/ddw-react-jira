@@ -5,8 +5,8 @@ import styled from "@emotion/styled"
 import { useProjects } from "../../utils/project"
 import { useUsers } from "../../utils/user"
 import List from "./list"
-import { useProjectsSearchParams } from "./util"
-import { ErrorBox } from "../../components/lib"
+import { useProjectModal, useProjectsSearchParams } from "./util"
+import { ButtonNoPadding, ErrorBox } from "../../components/lib"
 
 
 export const ProjectList = () => {
@@ -17,10 +17,14 @@ export const ProjectList = () => {
     const {data: users} = useUsers()
 
     useDocumentTitle("项目列表", false)
+    const { open } = useProjectModal();
  
     return (
         <Container>
             <h1>项目列表</h1>
+            <ButtonNoPadding onClick={open} type={"link"}>
+                创建项目
+            </ButtonNoPadding>
             <SearchPanel 
                 users={users || []}
                 param={param}

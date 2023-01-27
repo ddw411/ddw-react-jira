@@ -1,7 +1,8 @@
 import React, { ReactNode } from "react";
+import { useQueryClient } from "react-query";
 import * as auth from '../auth-provider'
 import { FullPageErrorFallback, FullPageLoading } from "../components/lib";
-import { User } from "../screen/project-list/search-panel";
+import { User } from "../types/User";
 import { useMount } from "../utils";
 import { http } from "../utils/http";
 import { useAsync } from "../utils/useAsync";
@@ -37,10 +38,15 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     // 例如，登录后发送get请求，获取数据后重新刷新渲染页面导致user丢失，调用logout
     // const [user, setUser] = useState<User|null>(null)
     const {data:user, error, isLoading,isIdle, isError, run, setData: setUser} = useAsync<User|null>()
+    const queryClient = useQueryClient()
 
     const login = (form: AuthForm) => auth.login(form).then(user => setUser(user))
     const register = (form: AuthForm) => auth.register(form).then(user => setUser(user))
-    const logout = () => auth.logout().then(() => setUser(null))
+    const logout = () => auth.logout().then(() => {
+        setUser(null)
+        // 清空react-query缓存
+        queryClient.clear()
+    })
 
     // 页面挂载初始化user，进行持久化
     useMount(() => {

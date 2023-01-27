@@ -16,6 +16,7 @@ export const useProjectsQueryKey = () => {
     return ['projects', params]
 }
 
+// 通过url管理创建或修改指定id的project
 export const useProjectModal = () => {
     // 通过url管理状态，全局
     // projectCreate,控制创建页面的打开
@@ -39,7 +40,7 @@ export const useProjectModal = () => {
 
     return {
         // 两种条件打开修改界面
-        projectModalOpen: projectCreate === 'true' || Boolean(editingProject),
+        projectModalOpen: projectCreate === 'true' || Boolean(editingProjectId),
         open,
         close,
         startEdit,

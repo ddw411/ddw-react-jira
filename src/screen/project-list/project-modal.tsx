@@ -24,6 +24,10 @@ export const ProjectModal = () => {
             }
         )
     }
+    const closeModal = () => {
+        form.resetFields()
+        close()
+    }
 
     useEffect(() => {
         // form控制表达数据，更新字段数据 -- 类似[fieldsValue,setFieldsValue] = useFormField()
@@ -35,7 +39,7 @@ export const ProjectModal = () => {
         //@ts-ignore
         <Drawer
             forceRender={true}
-            onClose={close}
+            onClose={closeModal}
             visible={projectModalOpen}
             width={"100%"}
             //@ts-ignore

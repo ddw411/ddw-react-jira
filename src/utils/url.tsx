@@ -6,6 +6,8 @@ import { cleanObject } from "."
 export const useUrlQueryParam = <K extends string>(keys: K[]) => {
     const [searchParams, setSearchParam] = useSearchParams()
 
+    // 0：根据传入键值，利用searchParams赋值，返回对象
+    // 1：更新参数
     return [
         useMemo(() =>  keys.reduce((prev, key) => {
                 return {...prev, [key]: searchParams.get(key) || ''}
