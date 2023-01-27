@@ -10,7 +10,7 @@ import { ButtonNoPadding, ErrorBox } from "../../components/lib"
 
 
 export const ProjectList = () => {
-    
+    // 管理搜索框输入值
     const [param, setParam] = useProjectsSearchParams()
     //@ts-ignore
     const { isLoading, error, data: list} = useProjects(useDebounce(param, 200))

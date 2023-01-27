@@ -13,8 +13,10 @@ interface AuthForm {
 }
 
 // 初始化user
+// async具有异步传递性
 const bootstrapUser = async () => {
     let user = null
+    // 浏览器是否缓存user
     const token = auth.getToken()
     if(token) {
         const data = await http('me', {token})
@@ -23,6 +25,7 @@ const bootstrapUser = async () => {
     return user
 }
 
+// 初始化context，含user信息
 const AuthContext = React.createContext<{
     user: User|null,
     register: (form: AuthForm) => Promise<void>,
@@ -40,6 +43,7 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     const {data:user, error, isLoading,isIdle, isError, run, setData: setUser} = useAsync<User|null>()
     const queryClient = useQueryClient()
 
+    // auth.login请求回带token的user
     const login = (form: AuthForm) => auth.login(form).then(user => setUser(user))
     const register = (form: AuthForm) => auth.register(form).then(user => setUser(user))
     const logout = () => auth.logout().then(() => {
@@ -64,7 +68,9 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     return <AuthContext.Provider children={children} value={{user, login, logout, register}}/>
 }
 
+// 此hook返回context对象
 export const useAuth = () => {
+    // 获取context
     const context = React.useContext(AuthContext)
     if(!context) {
         throw Error('wrong')

@@ -5,6 +5,8 @@ import { useUrlQueryParam } from "../../utils/url"
 export const useProjectsSearchParams = () => {
     // 从url获得的参数都是string类型
     const [param, setParam] = useUrlQueryParam(['name', 'personId'])
+
+    // personId转为number
     return [
         useMemo(() => ({...param, personId: Number(param.personId) || undefined}),[param]),
         setParam
@@ -18,7 +20,7 @@ export const useProjectsQueryKey = () => {
 
 // 通过url管理创建或修改指定id的project
 export const useProjectModal = () => {
-    // 通过url管理状态，全局
+    // 通过url管理状态，全局，useUrlQueryParam连接了url和路由
     // projectCreate,控制创建页面的打开
     const [{projectCreate}, setProjectCreate] = useUrlQueryParam([
         'projectCreate'
@@ -26,7 +28,8 @@ export const useProjectModal = () => {
     const [{editingProjectId}, setEditingProjectId] = useUrlQueryParam([
         'editingProjectId'
     ])
-    // editingProject:编辑项目的原数据
+
+    // editingProject:编辑项目的数据
     const {data: editingProject, isLoading} = useProjectDetail(Number(editingProjectId))
 
     const open = () => setProjectCreate({projectCreate: true})

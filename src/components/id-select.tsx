@@ -25,6 +25,7 @@ export const IdSelect = (props:IdSelectProps) => {
     const {value, onChange, defaultOptionName, options, ...restProps} = props
     return (
         <Select
+            // options?.length判断是否存在options
             value={options?.length ? toNumber(value) : 0}
             onChange={(value) => onChange?.(toNumber(value) || undefined)}
             {...restProps}

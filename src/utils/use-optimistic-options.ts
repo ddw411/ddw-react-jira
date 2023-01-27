@@ -1,5 +1,6 @@
 import { QueryKey, useQueryClient } from "react-query";
 
+// 传入标识和处理回调
 export const useConfig = (
   queryKey: QueryKey,
   callback: (target: any, old?: any[]) => any[]
@@ -12,6 +13,7 @@ export const useConfig = (
     // 乐观更新发生在请求回来之前。是对ui行为的一种预判
     async onMutate(target: any) {
       const previousItems = queryClient.getQueryData(queryKey);
+      // 更新
       queryClient.setQueryData(queryKey, (old?: any[]) => {
         return callback(target, old);
       });
@@ -32,6 +34,7 @@ export const useDeleteConfig = (queryKey: QueryKey) =>
     queryKey,
     (target, old) => old?.filter((item) => item.id !== target.id) || []
   );
+
 export const useEditConfig = (queryKey: QueryKey) =>
   useConfig(
     queryKey,
@@ -40,5 +43,6 @@ export const useEditConfig = (queryKey: QueryKey) =>
         item.id === target.id ? { ...item, ...target } : item
       ) || []
   );
+
 export const useAddConfig = (queryKey: QueryKey) =>
   useConfig(queryKey, (target, old) => (old ? [...old, target] : []));

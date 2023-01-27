@@ -18,9 +18,6 @@ export const KanbanScreen = () => {
     const {data: kanbans, isLoading: kanbanIsLoading} = useKanbans(useKanbanSearchParams())
     const {isLoading: taskIsLoading} = useTasks(useTasksSearchParams()[0])
     const isLoading = taskIsLoading || kanbanIsLoading
-
-    console.log(kanbans,"kanbans");
-    console.log("hi");
     
 
     return (

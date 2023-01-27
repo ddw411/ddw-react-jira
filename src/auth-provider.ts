@@ -16,14 +16,18 @@ export const handleUserResponse = ({user}: {user: User}) => {
 export const login = (data: {username: string; password: string}) => {
     return fetch(`${apiUrl}/login`, {
         method: "POST",
+        // 请求头，设置参数格式
         headers: {
             "Content-Type": "application/json",
         },
+        // 参数放在以JSON格式放在body里
         body: JSON.stringify(data)
     }).then(async (response) => {
+        // then(onFulfill,onReject),有response返回都进入onFulfill
         if(response.ok) {
             return handleUserResponse(await response.json())
         } else {
+            // 抛出错误
             return Promise.reject(await response.json())
         }
     })

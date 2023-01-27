@@ -42,7 +42,7 @@ export const FullPageErrorFallback = ({ error }: { error: Error | null }) => (
   </FullPage>
 );
 
-// 类型守卫
+// 类型守卫：value is Error --笃定value的类型
 const isError = (value: any): value is Error => value?.message;
 
 export const ErrorBox = ({ error }: { error: unknown }) => {

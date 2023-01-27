@@ -38,6 +38,7 @@ export const useDebounce = <V>(value: V, delay?: number) => {
 };
 
 export const useDocumentTitle = (title:string,keepOnUnmount = true) => {
+    // Document接口表示任何在浏览器中载入的网页,dom树
     const oldTitle = useRef(document.title).current
 
     useEffect(() => {
@@ -45,6 +46,7 @@ export const useDocumentTitle = (title:string,keepOnUnmount = true) => {
     },[title])
 
     useEffect(() => {
+        // 当前页面卸载时（后退），用oldtitle
         return () => {
             if(!keepOnUnmount) {
                 document.title = oldTitle

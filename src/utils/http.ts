@@ -12,6 +12,7 @@ interface Config extends RequestInit {
 // 登录、注册以外的请求
 export const http = async (endpoint: string, {data, token, headers, ...customConfig}: Config = {}) => {
     const config = {
+        // 默认config
         method: 'GET',
         headers: {
             Authorization: token ? `Bearer ${token}` : '',
@@ -29,7 +30,7 @@ export const http = async (endpoint: string, {data, token, headers, ...customCon
 
     return window.fetch(`${apiUrl}/${endpoint}`, config)
         .then(async (response) => {
-            // 未授权重刷新
+            // 401错误，未授权重刷新
             if(response.status === 401) {
                 await auth.logout()
                 window.location.reload()

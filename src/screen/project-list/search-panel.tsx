@@ -6,6 +6,7 @@ import { User } from "../../types/User";
 
 interface SearchPanelProps {
     users: User[];
+    // pick取出<A, b|c>A中bc
     param: Partial<Pick<Project, 'name' | 'personId'>>
     setParam: (param: SearchPanelProps['param']) => void
 }
@@ -13,7 +14,7 @@ interface SearchPanelProps {
 export const SearchPanel = (props: SearchPanelProps) => {
     const {param, setParam, users} = props
     return (
-        <Form style={{marginBottom: '2rem'}}layout={"inline"}>
+        <Form style={{marginBottom: '2rem'}} layout={"inline"}>
             <Form.Item>
                 <Input placeholder={'项目名'} type="text" value={param.name} onChange={evt => setParam({
                     ...param,

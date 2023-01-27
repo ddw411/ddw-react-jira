@@ -7,6 +7,8 @@ import { useUrlQueryParam } from "../../utils/url";
 
 export const useProjectIdInUrl = () => {
     const { pathname } = useLocation();
+    // console.log(pathname.match(/projects\/(\d+)/));
+    
     const id = pathname.match(/projects\/(\d+)/)?.[1];
     return Number(id);
 };
@@ -20,6 +22,7 @@ export const useKanbanSearchParams = () => ({projectId: useProjectIdInUrl()})
 // 配置react-query的queryKey，第二项用于监听
 export const useKanbansQueryKey = () => ['kanbans', useKanbanSearchParams()]
 
+// 配置task搜索框param
 export const useTasksSearchParams = () => {
     const [param, setParam] = useUrlQueryParam([
         'name',

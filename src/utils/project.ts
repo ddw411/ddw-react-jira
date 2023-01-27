@@ -16,7 +16,6 @@ export const useProjects = (param?: Partial<Project>) => {
 export const useEditProject = (queryKey: QueryKey) => {
     const client = useHttp()
     
-    
     // useMutation会暴露mutate和mutateAsync方法
     return useMutation(
         (params: Partial<Project>) => client(`projects/${params.id}`, {
